@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" accept a list of strings fields constructor argument. """
+""" Use of regex in replacing occurrences of certain field values """
 import re
 from typing import List
 import logging
@@ -8,7 +8,7 @@ import os
 
 
 class RedactingFormatter(logging.Formatter):
-    """ accept a list of strings fields constructor argument.
+    """ Redacting Formatter class
     """
 
     REDACTION = "***"
@@ -20,12 +20,13 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        """ accept a list of strings fields constructor argument. """
+        """ Returns filtered values from log records """
         return filter_datum(self.fields, self.REDACTION,
                             super().format(record), self.SEPARATOR)
 
 
 PII_FIELDS = ("name", "email", "password", "ssn", "phone")
+
 
 def get_db() -> mysql.connector.connection.MYSQLConnection:
     """ Connection to MySQL environment """
@@ -37,12 +38,13 @@ def get_db() -> mysql.connector.connection.MYSQLConnection:
     )
     return db_connect
 
+
 def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
     """ Returns regex obfuscated log messages """
-    for value in fields:
-        message = re.sub(f'{value}=(.*?){separator}',
-                         f'{value}={redaction}{separator}', message)
+    for field in fields:
+        message = re.sub(f'{field}=(.*?){separator}',
+                         f'{field}={redaction}{separator}', message)
     return message
 
 
@@ -63,8 +65,9 @@ def get_logger() -> logging.Logger:
 
 
 def main() -> None:
-    """ mplement a main function that
-    takes no arguments and returns nothing.
+    """ Obtain database connection using get_db
+    retrieve all role in the users table and display
+    each row under a filtered format
     """
     db = get_db()
     cursor = db.cursor()
@@ -81,6 +84,7 @@ def main() -> None:
 
     cursor.close()
     db.close()
+
 
 if __name__ == '__main__':
     main()
