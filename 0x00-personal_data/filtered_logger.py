@@ -25,6 +25,8 @@ class RedactingFormatter(logging.Formatter):
                             super().format(record), self.SEPARATOR)
 
 
+PII_FIELDS = ("name", "email", "password", "ssn", "phone")
+
 def get_db() -> mysql.connector.connection.MYSQLConnection:
     """ Connection to MySQL environment """
     db_connect = mysql.connector.connect(
