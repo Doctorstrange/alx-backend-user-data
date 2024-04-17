@@ -20,8 +20,8 @@ class BasicAuth(Auth):
         for a Basic Authentication.
         """
         if type(authorization_header) == str:
-            cypher = r'Basic (?P<token>.+)'
-            field_match = re.fullmatch(cypher, authorization_header.strip())
+            pattern = r'Basic (?P<token>.+)'
+            field_match = re.fullmatch(pattern, authorization_header.strip())
             if field_match is not None:
                 return field_match.group('token')
         return None
@@ -50,9 +50,9 @@ class BasicAuth(Auth):
         the Base64 decoded value.
         """
         if type(decoded_base64_authorization_header) == str:
-            cypher = r'(?P<user>[^:]+):(?P<password>.+)'
+            pattern = r'(?P<user>[^:]+):(?P<password>.+)'
             field_match = re.fullmatch(
-                cypher,
+                pattern,
                 decoded_base64_authorization_header.strip(),
             )
             if field_match is not None:
