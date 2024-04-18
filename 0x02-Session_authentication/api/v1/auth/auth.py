@@ -35,3 +35,12 @@ class Auth:
         """  returns None - request will be the Flask request
         """
         return None
+
+    def session_cookie(self, request=None):
+        """
+        returns a cookie value from a request:
+        """
+        if request is None:
+            return None
+        The_session = os.getenv('SESSION_NAME')
+        return request.cookies.get(The_session)
