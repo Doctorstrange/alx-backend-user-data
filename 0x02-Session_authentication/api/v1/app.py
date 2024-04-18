@@ -48,7 +48,7 @@ def not_found(error) -> str:
 
 
 @app.before_request
-def bef_req():
+def require_auth():
     """
     Assign the result of auth.current_user(request)
     to request.current_user
