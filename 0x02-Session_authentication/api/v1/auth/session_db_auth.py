@@ -13,7 +13,7 @@ class SessionDBAuth(SessionExpAuth):
     Sessions in database
     """
 
-    def create_session(self, user_id=None):
+    def create_session(self, user_id: str) -> str:
         """
         Create a Session ID
         """
