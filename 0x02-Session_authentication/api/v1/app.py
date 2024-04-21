@@ -14,16 +14,18 @@ app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
-AUTH_TYPE = os.getenv("AUTH_TYPE")
-if AUTH_TYPE == "auth":
-    from api.v1.auth.auth import Auth
-    auth = Auth()
-elif AUTH_TYPE == "basic_auth":
-    from api.v1.auth.basic_auth import BasicAuth
-    auth = BasicAuth()
-elif AUTH_TYPE == "session_auth":
-    from api.v1.auth.session_auth import SessionAuth
+
+auth_type = getenv('AUTH_TYPE', 'default')
+if auth_type == "session_auth":
     auth = SessionAuth()
+elif auth_type == 'session_exp_auth':
+    auth = SessionExpAuth()
+elif auth_type == 'session_db_auth':
+    auth = SessionDBAuth()
+elif auth_type == "basic_auth":
+    auth = BasicAuth()
+else:
+    auth = Auth()
 
 @app.errorhandler(401)
 def unauthorized(error) -> str:
