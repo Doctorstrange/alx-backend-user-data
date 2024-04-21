@@ -18,15 +18,15 @@ class SessionDBAuth(SessionExpAuth):
         Create a Session ID
         """
         session_id = super().create_session(user_id)
-        if not session_id:
-            return None
-        kw = {
-            "user_id": user_id,
-            "session_id": session_id
-        }
-        user = UserSession(**kw)
-        user.save()
-        return session_id
+
+        if isinstance(session_id, str):
+            kwargs = {
+                'user_id': user_id,
+                'session_id': session_id,
+            }
+            user_session = UserSession(**kwargs)
+            user_session.save()
+            return session_id
 
     def user_id_for_session_id(self, session_id: str) -> str:
         """Retrieves the user id of the user associated with given session id.
