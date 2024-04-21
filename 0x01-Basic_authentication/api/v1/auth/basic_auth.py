@@ -17,6 +17,23 @@ class BasicAuth(Auth):
         Auth (type): Class inherited from.
     """
 
+    def decode_base64_authorization_header(
+            self, base64_authorization_header: str) -> str:
+        """Decodes the Base64 string
+        """
+        if base64_authorization_header is None:
+            return None
+        if not isinstance(base64_authorization_header, str):
+            return None
+        try:
+            decode = base64.b64decode(
+                base64_authorization_header,
+                validate=True
+            )
+            return decode.decode('utf-8')
+        except (binascii.Error, UnicodeDecodeError):
+            return None
+
     def extract_base64_authorization_header(
             self, authorization_header: str) -> str:
         """Extracts the Base64 part of the Authorization header.
@@ -28,38 +45,15 @@ class BasicAuth(Auth):
             return None
         return authorization_header.split("Basic ")[1].strip()
 
-    def decode_base64_authorization_header(
-            self, base64_authorization_header: str) -> str:
-        """Decodes the Base64 string
-        """
-        if base64_authorization_header is None:
-            return None
-        if not isinstance(base64_authorization_header, str):
-            return None
-        try:
-            decoded = base64.b64decode(
-                base64_authorization_header,
-                validate=True
-            )
-            # Return the decoded value as UTF8 string
-            # you can use decode('utf-8')
-            return decoded.decode('utf-8')
-        except (binascii.Error, UnicodeDecodeError):
-            return None
-
     def extract_user_credentials(self, decoded_header: str) -> Tuple[str, str]:
         """Extract the user email and password from the decoded header string.
         """
-        # Return None, None if decoded_header is None or
-        # not a string
-        if decoded_header is None or not isinstance(decoded_header, str):
+        if decode_header is None or not isinstance(decode_header, str):
             return None, None
-        # Attempt to split email and password by first ':'
         try:
-            email, password = decoded_header.split(':', 1)
+            email, password = decode_header.split(':', 1)
         except ValueError:
             return None, None
-        # Return the user email and the user password
         return email, password
 
     def user_object_from_credentials(
@@ -85,6 +79,7 @@ class BasicAuth(Auth):
         Returns The User instance based on the request.
         """
         auth_header = self.authorization_header(request)
+
         b64_auth_header = self.extract_base64_authorization_header(auth_header)
         dec_header = self.decode_base64_authorization_header(b64_auth_header)
         user_email, user_pwd = self.extract_user_credentials(dec_header)
