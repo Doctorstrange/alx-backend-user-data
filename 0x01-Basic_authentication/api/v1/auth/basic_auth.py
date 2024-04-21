@@ -48,10 +48,10 @@ class BasicAuth(Auth):
     def extract_user_credentials(self, decoded_header: str) -> Tuple[str, str]:
         """Extract the user email and password from the decoded header string.
         """
-        if decode_header is None or not isinstance(decode_header, str):
+        if decoded_header is None or not isinstance(decoded_header, str):
             return None, None
         try:
-            email, password = decode_header.split(':', 1)
+            email, password = decoded_header.split(':', 1)
         except ValueError:
             return None, None
         return email, password
