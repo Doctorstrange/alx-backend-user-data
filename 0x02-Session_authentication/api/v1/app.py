@@ -51,21 +51,24 @@ def forbidden(error: Exception) -> Tuple[jsonify, int]:
 @app.before_request
 def handle_request():
     """
-    Handle the request by checking
+    Handle request
     """
     if auth is None:
         return
     excluded_paths = ['/api/v1/status/',
                       '/api/v1/unauthorized/',
-                      '/api/v1/forbidden/']
+                      '/api/v1/forbidden/',
+                      '/api/v1/auth_session/login/']
     if not auth.require_auth(request.path, excluded_paths):
         return
     auth_header = auth.authorization_header(request)
-    if auth_header is None:
+    session_cookie = auth.session_cookie(request)
+    if auth_header is None and session_cookie is None:
         abort(401)
-    current_user = auth.current_user(request)
-    if current_user is None:
+    user = auth.current_user(request)
+    if user is None:
         abort(403)
+    request.current_user = user
 
 
 if __name__ == "__main__":
