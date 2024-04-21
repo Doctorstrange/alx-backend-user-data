@@ -17,23 +17,6 @@ class BasicAuth(Auth):
         Auth (type): Class inherited from.
     """
 
-    def decode_base64_authorization_header(
-            self, base64_authorization_header: str) -> str:
-        """Decodes the Base64 string
-        """
-        if base64_authorization_header is None:
-            return None
-        if not isinstance(base64_authorization_header, str):
-            return None
-        try:
-            decode = base64.b64decode(
-                base64_authorization_header,
-                validate=True
-            )
-            return decode.decode('utf-8')
-        except (binascii.Error, UnicodeDecodeError):
-            return None
-
     def extract_base64_authorization_header(
             self, authorization_header: str) -> str:
         """Extracts the Base64 part of the Authorization header.
@@ -44,6 +27,23 @@ class BasicAuth(Auth):
         if not authorization_header.startswith("Basic "):
             return None
         return authorization_header.split("Basic ")[1].strip()
+
+    def decode_base64_authorization_header(
+            self, base64_authorization_header: str) -> str:
+        """Decodes the Base64 string
+        """
+        if base64_authorization_header is None:
+            return None
+        if not isinstance(base64_authorization_header, str):
+            return None
+        try:
+            decoded = base64.b64decode(
+                base64_authorization_header,
+                validate=True
+            )
+            return decoded.decode('utf-8')
+        except (binascii.Error, UnicodeDecodeError):
+            return None
 
     def extract_user_credentials(self, decoded_header: str) -> Tuple[str, str]:
         """Extract the user email and password from the decoded header string.
