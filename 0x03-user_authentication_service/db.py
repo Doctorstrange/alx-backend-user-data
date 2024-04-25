@@ -49,7 +49,8 @@ class DB:
 
     def find_user_by(self, **kwargs: Dict[str, str]) -> User:
         """takes in arbitrary keyword arguments and returns the first
-        row found in the users table as filtered by the method’s input arguments
+        row found in the users table as filtered by the method’s
+        input arguments
         Returns:
             NoResultFound and InvalidRequestError
             are raised when no results are found
