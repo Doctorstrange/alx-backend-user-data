@@ -57,6 +57,11 @@ class DB:
         """takes in arbitrary keyword arguments and returns the first
         row found in the users table as filtered by the method’s
         input arguments
+
+         Raises:
+            error: NoResultFound: When no results are found.
+            error: InvalidRequestError: When invalid query arguments are passed
+
         Returns:
             NoResultFound and InvalidRequestError
             are raised when no results are found
@@ -69,3 +74,22 @@ class DB:
         except InvalidRequestError:
             raise InvalidRequestError()
         return user
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """takes as argument a required user_id integer and
+        arbitrary keyword arguments, and returns None.
+        """
+        try:
+            user = self.find_user_by(id=user_id)
+        except NoResultFound:
+            raise ValueError("User with id {} not found".format(user_id))
+
+        for key, value in kwargs.items():
+            if not hasattr(user, key):
+                raise ValueError("User has no attribute {}".format(key))
+            setattr(user, key, value)
+
+        try:
+            self._session.commit()
+        except InvalidRequestError:
+            raise ValueError("Invalid request")
