@@ -100,7 +100,8 @@ class Auth:
 
 
     def get_reset_password_token(self, email: str) -> str:
-        """
+        """takes reset_token string argument and a
+        password string argument and returns None.
         """
         try:
             user = self._db.find_user_by(email=email)
