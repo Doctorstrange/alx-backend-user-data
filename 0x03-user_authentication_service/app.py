@@ -71,6 +71,7 @@ def profile() -> str:
         abort(403)
     return jsonify({"email": user.email})
 
+
 @app.route("/reset_password", methods=["POST"], strict_slashes=False)
 def get_reset_password_token() -> str:
     """ It take an email string argument and returns a string
@@ -81,6 +82,7 @@ def get_reset_password_token() -> str:
     except ValueError:
         abort(403)
     return jsonify({"email": email, "reset_token": reset_token})
+
 
 @app.route("/reset_password", methods=["PUT"], strict_slashes=False)
 def update_password() -> str:
